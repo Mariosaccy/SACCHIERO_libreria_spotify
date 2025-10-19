@@ -11,37 +11,51 @@ struct Canzone {
 
 void insermento(struct Canzone **canzoni, int index) {
 
-    char *titoloCanzoneIn;
-    char *nomeArtistaIn;
-    int minutiDurataIn;
-    int secondiDurataIn;
+    canzoni[index] = malloc(sizeof(struct Canzone));
+    if (!canzoni[index]) {
+        perror("Errore malloc canzoni[index]");
+        exit(1);
+    }
 
+    canzoni[index]->titoloCanzone = malloc(40);
+    canzoni[index]->nomeArtista = malloc(40);
+
+    getchar(); // consuma '\n' rimasto da scanf
     printf("Insert titoloCanzoneIn: ");
-    fgets(titoloCanzoneIn, 40, stdin);
-    printf("Insert nomeArtistaIn: ");
-    fgets(nomeArtistaIn, 40, stdin);
-    printf("Insert minutiDurataIn: ");
-    scanf("%d", &minutiDurataIn);
-    printf("Insert secondiDurataIn: ");
-    scanf("%d", &secondiDurataIn);
+    fgets(canzoni[index]->titoloCanzone, 40, stdin);
+    canzoni[index]->titoloCanzone[strcspn(canzoni[index]->titoloCanzone, "\n")] = '\0'; // rimuove newline
 
-    canzoni[index]->titoloCanzone = titoloCanzoneIn;
-    canzoni[index]->nomeArtista = nomeArtistaIn;
-    canzoni[index]->minutiDurata = minutiDurataIn;
-    canzoni[index]->secondiDurata = secondiDurataIn;
+    printf("Insert nomeArtistaIn: ");
+    fgets(canzoni[index]->nomeArtista, 40, stdin);
+    canzoni[index]->nomeArtista[strcspn(canzoni[index]->nomeArtista, "\n")] = '\0';
+
+    printf("Insert minutiDurataIn: ");
+    scanf("%d", &canzoni[index]->minutiDurata);
+
+    printf("Insert secondiDurataIn: ");
+    scanf("%d", &canzoni[index]->secondiDurata);
+}
+
+void visualizza(struct Canzone **canzoni, int index) {
+    struct Canzone *canzone = canzoni[index];
+    printf("TitoloCanzone: %s, Nome artista: %s, Durata: %d:%d \n", canzone->titoloCanzone, canzone->nomeArtista, canzone->minutiDurata, canzone->secondiDurata );
 }
 
 int main(void) {
 
     int scelta;
-
-    struct Canzone **canzoni = (struct Canzone **) malloc(sizeof(struct Canzone*));
     int index = 0;
 
+    struct Canzone **canzoni = (struct Canzone **) malloc(sizeof(struct Canzone*));
+
+    printf("Benvenuto su spotify!\n");
+
     do {
-        printf("Benvenuto su spotify!\n");
+        scelta = 0;
+
+        printf("/////////////////////\n");
         printf("1 -> Aggiungi canzone\n");
-        printf("2 -> Visualizza libreria\n");
+        printf("2 -> Visualizza librerie\n");
         printf("3 -> Esci\n");
 
         printf("la tua scelta: ");
@@ -55,7 +69,13 @@ int main(void) {
                 break;
 
             case 2:
-
+                if (index == 0) {
+                    printf("Nessuna canzone nella libreria.\n");
+                } else {
+                    for (int i = 0; i < index; i++) {
+                        visualizza(canzoni, i);
+                    }
+                }
                 break;
 
             case 3:
@@ -67,6 +87,7 @@ int main(void) {
                 break;
         }
 
+        getchar();
     }while(scelta != 3);
 
 
