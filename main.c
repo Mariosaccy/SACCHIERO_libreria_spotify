@@ -21,18 +21,18 @@ void insermento(struct Canzone **canzoni, int index) {
     canzoni[index]->nomeArtista = malloc(40);
 
     getchar(); // consuma '\n' rimasto da scanf
-    printf("Insert titoloCanzoneIn: ");
+    printf("Inserisci titoloCanzoneIn: ");
     fgets(canzoni[index]->titoloCanzone, 40, stdin);
     canzoni[index]->titoloCanzone[strcspn(canzoni[index]->titoloCanzone, "\n")] = '\0'; // rimuove newline
 
-    printf("Insert nomeArtistaIn: ");
+    printf("Inserisci nomeArtistaIn: ");
     fgets(canzoni[index]->nomeArtista, 40, stdin);
     canzoni[index]->nomeArtista[strcspn(canzoni[index]->nomeArtista, "\n")] = '\0';
 
-    printf("Insert minutiDurataIn: ");
+    printf("Inserisci minutiDurataIn: ");
     scanf("%d", &canzoni[index]->minutiDurata);
 
-    printf("Insert secondiDurataIn: ");
+    printf("Inserisci secondiDurataIn: ");
     scanf("%d", &canzoni[index]->secondiDurata);
 }
 
@@ -80,6 +80,7 @@ int main(void) {
 
             case 3:
 
+                printf("ucita\n");
                 break;
 
             default:
@@ -90,7 +91,7 @@ int main(void) {
         getchar();
     }while(scelta != 3);
 
-
+    free(canzoni); // libera la memoria
 
     return 0;
 }
