@@ -42,11 +42,38 @@ void visualizza(Canzone **canzoni, int index) {
 }
 
 int main(void) {
+    FILE *fileIn = fopen("../libreria_spotify.dat", "rb");
+
+    int index = 0;
+    Canzone **canzoni = NULL;
+
+    if (fileIn) {
+        fread(&index, sizeof(int), 1, fileIn);
+        if (index > 0) {
+            canzoni = malloc(index * sizeof(Canzone *));
+            for (int i = 0; i < index; i++) {
+                int len;
+                canzoni[i] = malloc(sizeof(Canzone));
+
+                /* titolo */
+                fread(&len, sizeof(int), 1, fileIn);
+                canzoni[i]->titoloCanzone = malloc(len);
+                fread(canzoni[i]->titoloCanzone, sizeof(char), len, fileIn);
+
+                /* artista */
+                fread(&len, sizeof(int), 1, fileIn);
+                canzoni[i]->nomeArtista = malloc(len);
+                fread(canzoni[i]->nomeArtista, sizeof(char), len, fileIn);
+
+                /* durate */
+                fread(&canzoni[i]->minutiDurata, sizeof(int), 1, fileIn);
+                fread(&canzoni[i]->secondiDurata, sizeof(int), 1, fileIn);
+            }
+        }
+        fclose(fileIn);
+    }
 
     int scelta;
-    int index = 0;
-
-    Canzone **canzoni = (Canzone **) malloc(sizeof(Canzone*));
 
     printf("Benvenuto su spotify!\n");
 
@@ -63,9 +90,9 @@ int main(void) {
 
         switch (scelta) {
             case 1:
+                canzoni = (Canzone **) realloc(canzoni, (index+1) * sizeof(Canzone*));
                 insermento(canzoni, index);
                 index++;
-                canzoni = (Canzone **) realloc(canzoni, (index+1) * sizeof(Canzone*));
                 break;
 
             case 2:
@@ -91,6 +118,30 @@ int main(void) {
         getchar();
     }while(scelta != 3);
 
+    FILE *file = fopen("../libreria_spotify.dat", "wb"); // il wb sta per write binario
+
+    if (file) {
+        fwrite(&index, sizeof(int), 1, file);
+        for (int i = 0; i < index; i++) {
+            int len = strlen(canzoni[i]->titoloCanzone) + 1;
+            fwrite(&len, sizeof(int), 1, file);
+            fwrite(canzoni[i]->titoloCanzone, sizeof(char), len, file);
+
+            len = strlen(canzoni[i]->nomeArtista) + 1;
+            fwrite(&len, sizeof(int), 1, file);
+            fwrite(canzoni[i]->nomeArtista, sizeof(char), len, file);
+
+            fwrite(&canzoni[i]->minutiDurata, sizeof(int), 1, file);
+            fwrite(&canzoni[i]->secondiDurata, sizeof(int), 1, file);
+        }
+        fclose(file);
+    }
+
+    for (int i = 0; i < index; i++) {
+        free(canzoni[i]->titoloCanzone);
+        free(canzoni[i]->nomeArtista);
+        free(canzoni[i]);
+    }
     free(canzoni); // libera la memoria
 
     return 0;
