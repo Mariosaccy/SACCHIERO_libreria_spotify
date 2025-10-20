@@ -2,16 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Canzone {
+typedef struct {
     char *titoloCanzone;
     char *nomeArtista;
     int minutiDurata;
     int secondiDurata;
-};
+}Canzone;
 
-void insermento(struct Canzone **canzoni, int index) {
+void insermento(Canzone **canzoni, int index) {
 
-    canzoni[index] = malloc(sizeof(struct Canzone));
+    canzoni[index] = malloc(sizeof(Canzone));
     if (!canzoni[index]) {
         perror("Errore malloc canzoni[index]");
         exit(1);
@@ -36,8 +36,8 @@ void insermento(struct Canzone **canzoni, int index) {
     scanf("%d", &canzoni[index]->secondiDurata);
 }
 
-void visualizza(struct Canzone **canzoni, int index) {
-    struct Canzone *canzone = canzoni[index];
+void visualizza(Canzone **canzoni, int index) {
+    Canzone *canzone = canzoni[index];
     printf("TitoloCanzone: %s, Nome artista: %s, Durata: %d:%d \n", canzone->titoloCanzone, canzone->nomeArtista, canzone->minutiDurata, canzone->secondiDurata );
 }
 
@@ -46,7 +46,7 @@ int main(void) {
     int scelta;
     int index = 0;
 
-    struct Canzone **canzoni = (struct Canzone **) malloc(sizeof(struct Canzone*));
+    Canzone **canzoni = (Canzone **) malloc(sizeof(Canzone*));
 
     printf("Benvenuto su spotify!\n");
 
@@ -65,12 +65,12 @@ int main(void) {
             case 1:
                 insermento(canzoni, index);
                 index++;
-                canzoni = (struct Canzone **) realloc(canzoni, (index+1) * sizeof(struct Canzone*));
+                canzoni = (Canzone **) realloc(canzoni, (index+1) * sizeof(Canzone*));
                 break;
 
             case 2:
                 if (index == 0) {
-                    printf("Nessuna canzone nella libreria.\n");
+                    printf("Nessuna canzone nella libreria\n");
                 } else {
                     for (int i = 0; i < index; i++) {
                         visualizza(canzoni, i);
